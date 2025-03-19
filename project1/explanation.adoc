@@ -15,6 +15,11 @@ This script provides real-time system resource usage details, including:
 include::./server-stats.sh[]
 ----
 
+[WARNING]
+====
+For some reason, the include directive is not working in this git repo. Please copy the script from the `server-stats.sh` file.
+====
+
 == Explanation
 
 === 1. Total CPU Usage
