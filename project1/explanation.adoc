@@ -127,13 +127,18 @@ Top 5 Processes by Memory Usage:
 ```
 
 == Summary
-| Command | Purpose |
-|---------|---------|
-| `top -bn1 | grep "Cpu(s)" | awk '{print 100 - $8"%"}'` | Get **total CPU usage** |
-| `free -m | awk 'NR==2{printf ...}'` | Get **memory usage** (free vs used) |
-| `df -h --total | grep "total" | awk '{printf ...}'` | Get **disk usage** (free vs used) |
-| `ps -eo pid,comm,%cpu --sort=-%cpu | head -n 6` | Get **top 5 CPU-consuming processes** |
-| `ps -eo pid,comm,%mem --sort=-%mem | head -n 6` | Get **top 5 memory-consuming processes** |
+
+[cols="1,2", options="header"]
+|===
+| Command | Purpose
+| `top -bn1 \| grep "Cpu(s)" \| awk '{print 100 - $8"%"}'` | Get *total CPU usage*
+| `free -m \| awk 'NR==2{printf ...}'` | Get *memory usage* (free vs used)
+| `df -h --total \| grep "total" \| awk '{printf ...}'` | Get *disk usage* (free vs used)
+| `ps -eo pid,comm,%cpu --sort=-%cpu \| head -n 6` | Get *top 5 CPU-consuming processes*
+| `ps -eo pid,comm,%mem --sort=-%mem \| head -n 6` | Get *top 5 memory-consuming processes*
+|===
 
 This script provides quick insights into your system's resource usage in an easy-to-read format.
+
+
 
