@@ -12,7 +12,7 @@ This script provides real-time system resource usage details, including:
 == The Script
 [source, bash]
 ----
-include::./server-stats.sh[]
+\include::./server-stats.sh[]
 ----
 
 == Explanation
