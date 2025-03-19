@@ -1,0 +1,134 @@
+= System Resource Usage Script Explained
+
+== Overview
+This script provides real-time system resource usage details, including:
+
+- **Total CPU Usage**
+- **Total Memory Usage** (Free vs Used including percentage)
+- **Total Disk Usage** (Free vs Used including percentage)
+- **Top 5 Processes by CPU Usage**
+- **Top 5 Processes by Memory Usage**
+
+== The Script
+[source, bash]
+----
+include::server-stats.sh[]
+----
+
+== Explanation
+
+=== 1. Total CPU Usage
+[source,bash]
+----
+top -bn1 | grep "Cpu(s)" | awk '{print 100 - $8"%"}'
+----
+* `top -bn1`: Runs `top` in batch mode once to get CPU stats.
+** `top`: a command-line tool that provides real-time system resource usage.
+** `-b`: Batch mode (non-interactive). Runs `top` in batch mode (useful for scripts).
+** `-n1`: Run `top` only once. (prevents continuous refresh).
+
+* `grep "Cpu(s)"`: Extracts the CPU usage line.
+* `awk '{print 100 - $8"%"}'`: Calculates the CPU usage by subtracting the idle percentage ($8) from 100.
+** `$8`: Represents the idle CPU percentage.
+** `print 100 - $8`: calculates the used CPU percentage.`
+** `"%"`: Appends the percentage symbol.
+
+=== 2. Total Memory Usage
+[source,bash]
+----
+free -m | awk 'NR==2{printf "Used: %sMB / Total: %sMB (%.2f%%)\n", $3, $2, $3*100/$2}'
+----
+* `free -m`: Displays memory usage in MB.
+* `awk 'NR==2{...}'`:
+  - Extracts **Total and Used Memory**.
+  - `$2`: Total memory.
+  - `$3`: Used memory.
+  - `printf` formats the output.
+
+=== 3. Total Disk Usage
+[source,bash]
+----
+df -h --total | grep "total" | awk '{printf "Used: %s / Total: %s (%.2f%%)\n", $3, $2, $5}'
+----
+* `df -h --total`: Shows disk usage in a human-readable format.
+* `grep "total"`: Extracts the total disk usage line.
+* `awk '{printf "Used: %s / Total: %s (%.2f%%)\n", $3, $2, $5}'`: Formats the output.
+
+=== 4. Top 5 Processes by CPU Usage
+[source,bash]
+----
+ps -eo pid,comm,%cpu --sort=-%cpu | head -n 6
+----
+* `ps -eo pid,comm,%cpu`: Lists processes with their CPU usage.
+** `ps`: Reports a snapshot of the current processes.
+** `-e`: Selects all processes.
+** `-o pid,comm,%cpu`: Displays:
+*** `pid`: Process ID.
+*** `comm`: Command name.
+*** `%cpu`: CPU usage.
+* `--sort=-%cpu`: Sorts processes by CPU usage in descending order.
+* `head -n 6`: Displays the top 5 processes (1 header + 5 processes).
+
+=== 5. Top 5 Processes by Memory Usage
+[source,bash]
+----
+ps -eo pid,comm,%mem --sort=-%mem | head -n 6
+----
+* `ps -eo pid,comm,%mem`: Lists processes with their memory usage in percentage.
+
+* `--sort=-%mem`: Sorts processes by memory usage in descending order.
+* `head -n 6`: Displays the top 5 memory-consuming processes (plus header row).
+
+== Running the Script
+
+1. Save the script as `system_usage.sh`:
+   ```bash
+   nano system_usage.sh
+   ```
+   Paste the script inside and save.
+
+2. Give it execute permission:
+   ```bash
+   chmod +x system_usage.sh
+   ```
+
+3. Run the script:
+   ```bash
+   ./system_usage.sh
+   ```
+
+== Example Output
+```
+================ System Resource Usage ================
+Total CPU Usage: 12.5%
+Total Memory Usage: Used: 1450MB / Total: 8000MB (18.12%)
+Total Disk Usage: Used: 100GB / Total: 500GB (20%)
+=======================================================
+Top 5 Processes by CPU Usage:
+  PID COMMAND         %CPU
+ 1234 firefox        10.5
+ 5678 chrome         8.7
+ 9101 vscode         6.2
+ 1213 gnome-shell    4.9
+ 1415 zoom           3.2
+=======================================================
+Top 5 Processes by Memory Usage:
+  PID COMMAND         %MEM
+ 5678 chrome         12.3
+ 1234 firefox        10.5
+ 9101 vscode         9.1
+ 1415 zoom           8.4
+ 1617 teams          7.2
+```
+
+== Summary
+| Command | Purpose |
+|---------|---------|
+| `top -bn1 | grep "Cpu(s)" | awk '{print 100 - $8"%"}'` | Get **total CPU usage** |
+| `free -m | awk 'NR==2{printf ...}'` | Get **memory usage** (free vs used) |
+| `df -h --total | grep "total" | awk '{printf ...}'` | Get **disk usage** (free vs used) |
+| `ps -eo pid,comm,%cpu --sort=-%cpu | head -n 6` | Get **top 5 CPU-consuming processes** |
+| `ps -eo pid,comm,%mem --sort=-%mem | head -n 6` | Get **top 5 memory-consuming processes** |
+
+This script provides quick insights into your system's resource usage in an easy-to-read format.
+
