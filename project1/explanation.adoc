@@ -12,7 +12,7 @@ This script provides real-time system resource usage details, including:
 == The Script
 [source, bash]
 ----
-include::server-stats.sh[]
+include::./server-stats.sh[]
 ----
 
 == Explanation
@@ -75,7 +75,7 @@ ps -eo pid,comm,%cpu --sort=-%cpu | head -n 6
 ps -eo pid,comm,%mem --sort=-%mem | head -n 6
 ----
 * `ps -eo pid,comm,%mem`: Lists processes with their memory usage in percentage.
-
+gi
 * `--sort=-%mem`: Sorts processes by memory usage in descending order.
 * `head -n 6`: Displays the top 5 memory-consuming processes (plus header row).
 
